@@ -4,11 +4,6 @@ import {
   TextField,
   Button,
   Box,
-  Typography,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   MenuItem,
   Select,
   InputLabel,
@@ -17,27 +12,85 @@ import {
 import MyImage from "./assets/MyImage.png";
 import LogoIMG from "./assets/logo.jpg";
 import "./App.css";
-
 function App() {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-  // const [status, setStatus] = useState("");
+
   const [openModal, setOpenModal] = useState(false);
   const [countryCode, setCountryCode] = useState("+1");
   const [errors, setErrors] = useState({});
   const [apiMessage, setApiMessage] = useState("");
-
+  const [loading, setLoading] = useState(false);
+  const handleNameChange = (e) => {
+    const value = e.target.value;
+    setName(value);
+    if (!value.trim()) {
+      setErrors((prev) => ({ ...prev, name: "Name is required." }));
+    } else if (!/^[a-zA-Z ]+$/.test(value)) {
+      setErrors((prev) => ({
+        ...prev,
+        name: "Name must be alphanumeric (letters, numbers, spaces only).",
+      }));
+    } else {
+      // Clear error if valid
+      setErrors((prev) => ({ ...prev, name: "" }));
+    }
+  };
+  const handleContactChange = (e) => {
+    const value = e.target.value;
+    setContact(value);
+    if (!value) {
+      setErrors((prev) => ({
+        ...prev,
+        contact: "Contact number is required.",
+      }));
+    } else if (
+      !/^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,4}$/.test(
+        value
+      )
+    ) {
+      setErrors((prev) => ({
+        ...prev,
+        contact: "Please enter a valid contact number.",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, contact: "" }));
+    }
+  };
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    if (!value) {
+      setErrors((prev) => ({ ...prev, email: "Email is required." }));
+    } else if (!/\S+@\S+\.\S+/.test(value)) {
+      setErrors((prev) => ({
+        ...prev,
+        email: "Please enter a valid email address.",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, email: "" }));
+    }
+  };
+  const handleMessageChange = (e) => {
+    const value = e.target.value;
+    setMessage(value);
+    if (!value) {
+      setErrors((prev) => ({ ...prev, message: "Message is required." }));
+    } else {
+      setErrors((prev) => ({ ...prev, message: "" }));
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    setErrors({});
-
     const newErrors = {};
-
     if (!name) {
       newErrors.name = "Name is required.";
+    } else if (!/^[a-zA-Z0-9 ]+$/.test(name)) {
+      newErrors.name = "Name must be alphanumeric.";
+    } else if (!/[a-zA-Z0-9]/.test(name)) {
+      newErrors.name = "Name must contain at least one letter or number.";
     }
     if (!contact) {
       newErrors.contact = "Contact number is required.";
@@ -56,14 +109,12 @@ function App() {
     if (!message) {
       newErrors.message = "Message is required.";
     }
-
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
-    const apiUrl = "https://binaryprotagonist-repair-reporting.onrender.com/send-email";
-
+    setLoading(true);
+    const apiUrl = "https://send-email-hcif.onrender.com/send-email";
     try {
       const response = await axios.post(apiUrl, {
         name,
@@ -71,33 +122,31 @@ function App() {
         email,
         message,
       });
-
       if (response.status === 200) {
-        // setStatus("Message sent successfully!");
+        
         setApiMessage(response.data.message || "Message sent successfully!");
       } else {
-        // setStatus("Failed to send message.");
+       
         setApiMessage("Failed to send message. Please try again.");
       }
     } catch (error) {
       console.error(error);
-      // setStatus("An error occurred.");
+     
       setApiMessage(
         "An error occurred while sending your message. Please try again."
       );
+    } finally {
+      setLoading(false);
     }
-
     setOpenModal(true);
     setName("");
     setContact("");
     setEmail("");
     setMessage("");
   };
-
   const handleCloseModal = () => {
     setOpenModal(false);
   };
-
   return (
     <>
       <div className="container">
@@ -121,9 +170,9 @@ function App() {
           >
             <TextField
               label="Name"
+              type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
+              onChange={handleNameChange}
               error={!!errors.name}
               helperText={errors.name}
               sx={{ marginBottom: "15px" }}
@@ -169,13 +218,11 @@ function App() {
                   <MenuItem value="+90">+90 (Turkey)</MenuItem>
                 </Select>
               </FormControl>
-
               <TextField
                 label="Contact"
                 type="tel"
                 value={contact}
-                onChange={(e) => setContact(e.target.value)}
-                required
+                onChange={handleContactChange}
                 error={!!errors.contact}
                 helperText={errors.contact}
                 sx={{ flex: 1 }}
@@ -185,8 +232,7 @@ function App() {
               label="Email"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              onChange={handleEmailChange}
               error={!!errors.email}
               helperText={errors.email}
               sx={{ marginBottom: "15px" }}
@@ -196,8 +242,7 @@ function App() {
               multiline
               rows={4}
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              required
+              onChange={handleMessageChange}
               error={!!errors.message}
               helperText={errors.message}
               sx={{ marginBottom: "15px" }}
@@ -206,13 +251,13 @@ function App() {
               type="submit"
               variant="contained"
               color="primary"
+              disabled={loading}
               sx={{ padding: "12px", marginTop: "20px" }}
             >
-              Submit
+              {loading ? "Submitting..." : "Submit for request"}
             </Button>
           </Box>
         </div>
-
         {openModal && (
           <div className="dialog-overlay">
             <div className="backdrop" onClick={handleCloseModal} />
@@ -228,7 +273,6 @@ function App() {
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                   </svg>
                 </div>
-                <h3 className="dialog-title">Operation Status</h3>
                 <p className="dialog-message">{apiMessage}</p>
               </div>
               <div className="dialog-footer">
@@ -241,10 +285,9 @@ function App() {
         )}
       </div>
       <div className="footer">
-        <p>Made with ❤️ - Brain Inventory</p>
+        <p>Made with ❤️ by Brain Inventory</p>
       </div>
     </>
   );
 }
-
 export default App;
