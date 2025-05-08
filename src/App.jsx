@@ -23,7 +23,7 @@ function App() {
   const [contact, setContact] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-  const [status, setStatus] = useState("");
+  // const [status, setStatus] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [countryCode, setCountryCode] = useState("+1");
   const [errors, setErrors] = useState({});
@@ -73,15 +73,15 @@ function App() {
       });
 
       if (response.status === 200) {
-        setStatus("Message sent successfully!");
+        // setStatus("Message sent successfully!");
         setApiMessage(response.data.message || "Message sent successfully!");
       } else {
-        setStatus("Failed to send message.");
+        // setStatus("Failed to send message.");
         setApiMessage("Failed to send message. Please try again.");
       }
     } catch (error) {
       console.error(error);
-      setStatus("An error occurred.");
+      // setStatus("An error occurred.");
       setApiMessage(
         "An error occurred while sending your message. Please try again."
       );
