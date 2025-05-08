@@ -9,7 +9,7 @@ html {
 .container {
   display: flex;
   width: 100vw;
-  height: 100dvh;
+  height: 104dvh;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #D5E3D5;
 }
@@ -217,7 +217,7 @@ html {
 }
 .footer {
   position: absolute;
-  bottom: 0px;
+  bottom: -30px;
   padding-bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
