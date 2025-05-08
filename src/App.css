@@ -9,7 +9,7 @@ html {
 .container {
   display: flex;
   width: 100vw;
-  height: 100%;
+  height: 100dvh;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #D5E3D5;
 }
@@ -217,7 +217,7 @@ html {
 }
 .footer {
   position: absolute;
-  bottom: -140px;
+  bottom: 0px;
   padding-bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
@@ -228,4 +228,25 @@ html {
 .css-1toxriw-MuiList-root-MuiMenu-list {
   height: 300px;
   overflow-y: scroll;
+  padding-top: 10px;
+}
+
+@media (min-width: 1280px) and (max-width: 1400px) {
+  .footer{
+    bottom: -60px;
+
+  }
+  .container{
+    height: 100%;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1279px) {
+  .footer{
+    bottom: -160px;
+
+  }
+  .container{
+    height: 100%;
+  }
 }

@@ -31,7 +31,7 @@ function App() {
     } else if (!/^[a-zA-Z ]+$/.test(value)) {
       setErrors((prev) => ({
         ...prev,
-        name: "Name must be alphanumeric (letters, numbers, spaces only).",
+        name: "Name must contain only letters and spaces only.",
       }));
     } else {
       // Clear error if valid
@@ -191,6 +191,7 @@ function App() {
                   value={countryCode}
                   onChange={(e) => setCountryCode(e.target.value)}
                   label="Country Code"
+                  className="countrycode"
                   renderValue={(selected) => selected}
                   MenuProps={{
                     PaperProps: {
@@ -254,7 +255,7 @@ function App() {
               disabled={loading}
               sx={{ padding: "12px", marginTop: "20px" }}
             >
-              {loading ? "Submitting..." : "Submit for request"}
+              {loading ? "Submitting..." : "Submit Your request"}
             </Button>
           </Box>
         </div>
@@ -283,10 +284,12 @@ function App() {
             </div>
           </div>
         )}
-      </div>
-      <div className="footer">
+        <div className="footer">
         <p>Made with ❤️ by Brain Inventory</p>
       </div>
+      </div>
+
+
     </>
   );
 }
